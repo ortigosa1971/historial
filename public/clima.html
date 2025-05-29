@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clima Diario - Meteo Alfarnate</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #1f2937, #374151);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #f9fafb;
+    }
+    .card {
+      background-color: #111827;
+      border-radius: 1rem;
+      padding: 1rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+      margin: 1rem 0;
+    }
+    table {
+      width: 100%;
+    }
+    th, td {
+      padding: 0.75rem;
+      text-align: center;
+    }
+    th {
+      background-color: #1e3a8a;
+    }
+    tr:nth-child(even) {
+      background-color: #1f2937;
+    }
+    tr:nth-child(odd) {
+      background-color: #111827;
+    }
+  </style>
+</head>
+<body class="p-6">
+  <h1 class="text-3xl font-bold text-center mb-6">📅 Registros Climáticos Diarios</h1>
+
+  <div class="card">
+    <table class="table-auto text-sm">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>🌡️ Máxima (°C)</th>
+          <th>🌡️ Mínima (°C)</th>
+          <th>🌧️ Lluvia (mm)</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-clima">
+        <!-- Los datos se insertarán aquí -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    async function cargarDatos() {
+      try {
+        const res = await fetch('/api/clima-historico');
+        const datos = await res.json();
+        const tabla = document.getElementById("tabla-clima");
+        tabla.innerHTML = datos.map(fila => \`
+          <tr>
+            <td>\${fila.fecha}</td>
+            <td>\${fila.temp_max.toFixed(1)}</td>
+            <td>\${fila.temp_min.toFixed(1)}</td>
+            <td>\${fila.lluvia.toFixed(2)}</td>
+          </tr>
+        \`).join('');
+      } catch (err) {
+        console.error("❌ Error al cargar datos:", err);
+      }
+    }
+
+    cargarDatos();
+  </script>
+</body>
+</html>
